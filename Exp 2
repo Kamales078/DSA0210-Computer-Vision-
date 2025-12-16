@@ -1,0 +1,28 @@
+import cv2
+import matplotlib.pyplot as plt
+
+# Read the image
+img = cv2.imread('/content/istockphoto-1004243142-612x612.jpg') # Replace 'scenery.jpg' with the actual filename
+
+# Apply Gaussian Blur
+# Kernel size (ksize) must be positive and odd, e.g., (5, 5)
+# SigmaX is the Gaussian kernel standard deviation in X direction, e.g., 0
+blurred_img = cv2.GaussianBlur(img, (5, 5), 0)
+
+# Display the original and blurred images (optional)
+# cv2.imshow('Original Image', img)
+# cv2.imshow('Blurred Image', blurred_img)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+# Or using matplotlib (better for notebooks)
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+plt.title('Original Image')
+plt.axis('off')
+plt.subplot(1, 2, 2)
+plt.imshow(cv2.cvtColor(blurred_img, cv2.COLOR_BGR2RGB))
+plt.title('Blurred Image')
+plt.axis('off')
+plt.show()
