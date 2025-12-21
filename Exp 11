@@ -1,0 +1,25 @@
+import cv2
+import numpy as np
+
+# Read image
+img = cv2.imread("image3.png")
+
+# 4 points in the input image
+src = np.float32([[50, 50], [300, 50], [50, 300], [300, 300]])
+
+# 4 corresponding points in output image
+dst = np.float32([[10, 80], [280, 60], [60, 320], [300, 300]])
+
+# Compute Homography using DLT (cv2.findHomography uses DLT internally)
+H, _ = cv2.findHomography(src, dst, 0)
+
+# Apply perspective transform
+height, width = img.shape[:2]
+output = cv2.warpPerspective(img, H, (width, height))
+
+# Show results
+cv2.imshow("Original Image", img)
+cv2.imshow("DLT Transformed Image", output)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
