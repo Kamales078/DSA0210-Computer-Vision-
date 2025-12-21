@@ -1,0 +1,10 @@
+import cv2
+
+img = cv2.imread("image3.png")
+cv2.imshow("original",img)
+crop = img[50:200, 50:200]   # crop
+img[250:400, 250:400] = crop # paste
+
+cv2.imshow("Output", img)
+
+cv2.waitKey(0)
