@@ -1,0 +1,11 @@
+import cv2
+
+img = cv2.imread("image4.png")
+
+watermarked = img.copy()
+cv2.putText(watermarked, "WATERMARK", (50, 50),
+            cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
+
+cv2.imshow("Watermarked", watermarked)
+cv2.imshow("original",img)
+cv2.waitKey(0)
