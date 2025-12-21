@@ -1,0 +1,63 @@
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load the captured image
+try:
+    image_path = '/content/Screenshot 2025-12-17 131724.png'
+    img = cv2.imread(image_path)
+
+    if img is None:
+        raise FileNotFoundError(f"Image not found at {image_path}")
+
+    # Convert BGR to RGB for displaying with matplotlib
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    # Get original dimensions
+    original_height, original_width = img.shape[:2]
+    print(f"Original Image Dimensions: {original_width}x{original_height}")
+
+    # --- Scaling to a Bigger Size ---
+    # Define scaling factor for bigger size (e.g., 1.5 times larger)
+    bigger_scale_factor = 1.5
+    bigger_width = int(original_width * bigger_scale_factor)
+    bigger_height = int(original_height * bigger_scale_factor)
+    
+    # Resize using INTER_LINEAR or INTER_CUBIC for upscaling (smoother)
+    img_bigger = cv2.resize(img_rgb, (bigger_width, bigger_height), interpolation=cv2.INTER_LINEAR)
+    print(f"Bigger Image Dimensions: {bigger_width}x{bigger_height}")
+
+    # --- Scaling to a Smaller Size ---
+    # Define scaling factor for smaller size (e.g., 0.5 times smaller)
+    smaller_scale_factor = 0.5
+    smaller_width = int(original_width * smaller_scale_factor)
+    smaller_height = int(original_height * smaller_scale_factor)
+
+    # Resize using INTER_AREA for downscaling (avoids moire patterns)
+    img_smaller = cv2.resize(img_rgb, (smaller_width, smaller_height), interpolation=cv2.INTER_AREA)
+    print(f"Smaller Image Dimensions: {smaller_width}x{smaller_height}")
+
+    # --- Displaying the Images ---
+    plt.figure(figsize=(15, 5))
+
+    plt.subplot(1, 3, 1)
+    plt.imshow(img_rgb)
+    plt.title('Original Image')
+    plt.axis('off')
+
+    plt.subplot(1, 3, 2)
+    plt.imshow(img_bigger)
+    plt.title(f'Bigger Image ({bigger_scale_factor}x)')
+    plt.axis('off')
+
+    plt.subplot(1, 3, 3)
+    plt.imshow(img_smaller)
+    plt.title(f'Smaller Image ({smaller_scale_factor}x)')
+    plt.axis('off')
+
+    plt.show()
+
+except FileNotFoundError as e:
+    print(f"Error: {e}. Please ensure 'captured_photo.jpg' exists.")
+except Exception as e:
+    print(f"An error occurred: {e}")
