@@ -1,0 +1,24 @@
+import cv2
+import numpy as np
+
+# Read image
+img = cv2.imread("image1.png")
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# 8-neighbor Laplacian mask
+laplacian_mask = np.array([[1, 1, 1],
+                           [1,-8, 1],
+                           [1, 1, 1]])
+
+# Apply the mask
+laplacian = cv2.filter2D(gray, -1, laplacian_mask)
+
+# Sharpened image
+sharpened = cv2.subtract(gray, laplacian)
+
+# Show results
+cv2.imshow("Original Image", gray)
+cv2.imshow("Sharpened Image (8-neighbor Laplacian)", sharpened)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
