@@ -1,0 +1,24 @@
+import cv2
+import numpy as np
+
+# Read image
+img = cv2.imread("image3.png")
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Laplacian mask with positive center coefficient
+laplacian_mask = np.array([[0, -1, 0],
+                           [-1, 5, -1],
+                           [0, -1, 0]])
+
+# Apply the mask
+laplacian = cv2.filter2D(gray, -1, laplacian_mask)
+
+# Sharpened image = original + laplacian
+sharpened = cv2.add(gray, laplacian)
+
+# Show results
+cv2.imshow("Original Image", gray)
+cv2.imshow("Sharpened Image", sharpened)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
