@@ -1,0 +1,24 @@
+import cv2
+import numpy as np
+
+# Read image
+img = cv2.imread("image1.png")
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Apply Sobel Gradient Masks
+gx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)   # horizontal gradient
+gy = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)   # vertical gradient
+
+# Magnitude of gradient
+gradient = cv2.absdiff(gx, gy)
+gradient = np.uint8(np.absolute(gradient))
+
+# Sharpening using gradient
+sharpened = cv2.add(gray, gradient)
+
+# Display
+cv2.imshow("Original", gray)
+cv2.imshow("Gradient Image", gradient)
+cv2.imshow("Sharpened Image", sharpened)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
