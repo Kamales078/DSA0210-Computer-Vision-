@@ -1,0 +1,46 @@
+import cv2
+import numpy as np
+
+# Ensure video_file, M, original_width, original_height are defined from previous steps
+# If not, set them here for independent execution (using values from kernel state)
+if 'video_file' not in locals():
+    video_file = '/content/197483-905015011_medium.mp4' # Or the actual video path you are using
+if 'M' not in locals():
+    M = np.array([[1.25021720e+00, 1.97676717e-01, 0.00000000e+00],
+                   [1.40704398e-01, 1.11115936e+00, 0.00000000e+00],
+                   [9.77792897e-05, 7.72476424e-05, 1.00000000e+00]])
+if 'original_width' not in locals():
+    original_width = 112 # Or the actual width
+if 'original_height' not in locals():
+    original_height = 112 # Or the actual height
+
+# 1. Initialize a cv2.VideoCapture object
+cap = cv2.VideoCapture(video_file)
+
+# Check if the video file was opened successfully
+if not cap.isOpened():
+    print(f"Error: Could not open video file {video_file}")
+else:
+    print(f"Video file '{video_file}' opened successfully for frame transformation.")
+
+    # 2. Create an empty list to store the processed frames
+    transformed_frames = []
+
+    # 3. Loop through the video frames
+    while True:
+        # a. Read the frame
+        ret, frame = cap.read()
+
+        # d. If cap.read() returns False, break the loop
+        if not ret:
+            break
+
+        # b. Apply the perspective transformation
+        transformed_frame = cv2.warpPerspective(frame, M, (original_width, original_height))
+
+        # c. Append the transformed_frame to the transformed_frames list
+        transformed_frames.append(transformed_frame)
+
+    # 4. Release the cap object
+    cap.release()
+    print(f"Successfully transformed {len(transformed_frames)} frames.")
