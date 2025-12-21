@@ -1,0 +1,60 @@
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load the captured image (assuming 'img_rgb' from previous step is available or re-load)
+try:
+    # If img_rgb is not in kernel state, re-load the image
+    if 'img_rgb' not in locals():
+        image_path = '/content/Screenshot 2025-12-17 125718.png' # Using the image path from a previous cell
+        img = cv2.imread(image_path)
+        if img is None:
+            raise FileNotFoundError(f"Image not found at {image_path}")
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    original_height, original_width = img_rgb.shape[:2]
+
+    # --- Perspective Transformation ---
+    # Define 4 points on the original image (e.g., corners of a rectangle)
+    pts1 = np.float32([
+        [50, 50],                    # Top-left
+        [original_width - 50, 50],   # Top-right
+        [original_width - 50, original_height - 50], # Bottom-right
+        [50, original_height - 50]   # Bottom-left
+    ])
+
+    # Define the corresponding 4 points for the transformed image
+    # This defines the new perspective
+    pts2 = np.float32([
+        [0, 0],                      # New Top-left
+        [original_width, 10],        # New Top-right (shifted down)
+        [original_width - 20, original_height], # New Bottom-right (shifted left)
+        [20, original_height - 10]   # New Bottom-left (shifted right and up)
+    ])
+
+    # Get the perspective transformation matrix
+    M = cv2.getPerspectiveTransform(pts1, pts2)
+
+    # Apply the perspective transformation
+    # The third argument is the size of the output image (width, height)
+    transformed_image = cv2.warpPerspective(img_rgb, M, (original_width, original_height))
+
+    # --- Displaying the Images ---
+    plt.figure(figsize=(12, 6))
+
+    plt.subplot(1, 2, 1)
+    plt.imshow(img_rgb)
+    plt.title('Original Image')
+    plt.axis('off')
+
+    plt.subplot(1, 2, 2)
+    plt.imshow(transformed_image)
+    plt.title('Perspective Transformed Image')
+    plt.axis('off')
+
+    plt.show()
+
+except FileNotFoundError as e:
+    print(f"Error: {e}. Please ensure the image file exists.")
+except Exception as e:
+    print(f"An error occurred: {e}")
