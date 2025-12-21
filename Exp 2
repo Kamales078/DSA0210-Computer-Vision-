@@ -1,0 +1,60 @@
+import cv2
+import time
+from IPython.display import HTML, display
+from base64 import b64encode
+
+def play_video_in_colab(video_path, speed_factor=1.0, title=""):    
+    # Encode video to base64 for display in Colab
+    with open(video_path, 'rb') as f:
+        video_encoded = b64encode(f.read()).decode('ascii')
+
+    # Generate HTML to display the video
+    html_str = f"""
+    <h3>{title} (Speed: {speed_factor}x)</h3>
+    <video width="320" height="240" controls autoplay loop>
+        <source src="data:video/mp4;base64,{video_encoded}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <br>
+    """
+    display(HTML(html_str))
+
+def process_and_display_video(video_path, normal_fps=None):
+    cap = cv2.VideoCapture(video_path)
+
+    if not cap.isOpened():
+        print(f"Error: Could not open video file {video_path}")
+        return
+
+    # Get original video properties
+    if normal_fps is None:
+        original_fps = cap.get(cv2.CAP_PROP_FPS)
+        if original_fps == 0:  # Fallback for some codecs
+            original_fps = 30 # Default to 30 FPS if not detected
+    else:
+        original_fps = normal_fps
+
+    print(f"Original FPS detected: {original_fps}")
+
+    # --- Normal Motion --- 
+    print("\n--- Playing in Normal Motion ---")
+    play_video_in_colab(video_path, speed_factor=1.0, title="Normal Motion")
+
+    # --- Slow Motion (e.g., 0.5x speed) --- 
+    print("\n--- Playing in Slow Motion ---")
+    # To slow down, you'd typically capture at original_fps and play back slower,
+    # or encode at a lower FPS. For display purposes in colab, 
+    # we'll just encode the original video and ask the user to adjust speed.
+    play_video_in_colab(video_path, speed_factor=0.5, title="Slow Motion")
+
+    # --- Fast Motion (e.g., 2x speed) --- 
+    print("\n--- Playing in Fast Motion ---")
+    play_video_in_colab(video_path, speed_factor=2.0, title="Fast Motion")
+
+    cap.release()
+
+# Specify the path to your dummy video file
+video_file = '/content/197483-905015011_medium.mp4'
+
+# Process and display the video
+process_and_display_video(video_file)
