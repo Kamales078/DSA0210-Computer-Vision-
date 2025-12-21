@@ -1,0 +1,46 @@
+import cv2
+import numpy as np
+
+# The video_file variable should be defined from previous steps
+# If not, ensure it's set here for independent execution:
+video_file = '/content/197483-905015011_medium.mp4'
+
+# 1. Initialize a cv2.VideoCapture object
+cap = cv2.VideoCapture(video_file)
+
+# 2. Check if the video was opened successfully
+if not cap.isOpened():
+    print(f"Error: Could not open video file {video_file}")
+else:
+    print(f"Video file '{video_file}' opened successfully.")
+
+    # 3. Get original_width and original_height
+    original_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    original_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print(f"Original Video Dimensions: {original_width}x{original_height}")
+
+    # 4. Define pts1 (source points) as a numpy.float32 array
+    pts1 = np.float32([
+        [0, 0],                            # Top-left
+        [original_width - 1, 0],           # Top-right
+        [0, original_height - 1],          # Bottom-left
+        [original_width - 1, original_height - 1] # Bottom-right
+    ])
+    print(f"\nSource Points (pts1):\n{pts1}")
+
+    # 5. Define pts2 (destination points) as a numpy.float32 array
+    # Example: Shift top-right and bottom-right points to create a trapezoidal effect
+    pts2 = np.float32([
+        [0, 0],                            # Top-left (unchanged)
+        [original_width - 1, original_height * 0.2],   # Top-right (shifted down)
+        [original_width * 0.1, original_height - 1],   # Bottom-left (shifted right)
+        [original_width - 1, original_height - 1] # Bottom-right (unchanged)
+    ])
+    print(f"\nDestination Points (pts2):\n{pts2}")
+
+    # 6. Calculate the perspective transformation matrix M
+    M = cv2.getPerspectiveTransform(pts1, pts2)
+    print(f"\nPerspective Transformation Matrix (M):\n{M}")
+
+    # 7. Release the video capture object
+    cap.release()
